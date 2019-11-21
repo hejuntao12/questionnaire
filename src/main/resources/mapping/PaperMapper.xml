@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.experiment.questionnaire.mapper.PaperMapper">
+
+    <resultMap id="BaseResultMap" type="com.experiment.questionnaire.pojo.Paper">
+        <result column="c_id" jdbcType="VARCHAR" property="CId" />
+        <result column="c_name" jdbcType="VARCHAR" property="CName" />
+        <result column="n_order" jdbcType="INTEGER" property="NOrder" />
+    </resultMap>
+
+    <select id="selectByCId" resultMap="BaseResultMap">
+        select * from t_paper where c_id = #{id}
+    </select>
+
+</mapper>
