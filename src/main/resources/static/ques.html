@@ -206,6 +206,8 @@
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/materialize.min.js"></script>
     <script src="js/template-native.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/config.js"></script>
     <script type="text/templete" id="radio-ques">
         <% for(var i = 0; i < record.length; i++){ var item=record[i]; %>
         <div class="col-12">
@@ -235,46 +237,19 @@
         var init = function(){
             template.config('escape', false);
             //定义参数类型
-            var record = [{
-                "title": '1. 在过去的一周里，你感觉到焦虑的频率：',
-                "content": [{
-                    "lab": "0=过去一周没有焦虑。",
-                    "value" : 0
-                }, {
-                    "lab": "1=很少焦虑，偶尔感觉焦虑。",
-                    "value" : 1
-                }, {
-                    "lab": "2=有时焦虑。一半时间感觉焦虑，难以放松。",
-                    "value" : 2
-                }, {
-                    "lab": "3=经常焦虑。大多数时间感觉焦虑，很难放松。",
-                    "value" : 3
-                }, {
-                    "lab": "4=总是焦虑。所有时间都感觉焦虑，从未真正放松。",
-                    "value" : 4
-                }]
-            }, {
-                "title": '2. 在过去的一周里，当你感觉焦虑时，你的焦虑有多强烈或多严重？',
-                "content": [{
-                    "lab": "0=极少或没有：没有焦虑或几乎不明显。",
-                    "value" : 0
-                }, {
-                    "lab": "1=轻度：焦虑水平低。当我感觉疲劳的时候可以放松。生理症状只是轻微不适。",
-                    "value" : 1
-                }, {
-                    "lab": "2=中度：有时焦虑令人痛苦。难以放松或集中注意力，但如果努力的话仍能做到。生理症状令人不适。",
-                    "value" : 2
-                }, {
-                    "lab": "3=重度：大部分时间焦虑都很强烈。很难放松或把注意力放在其他事情上，生理症状让人极度不适。",
-                    "value" : 3
-                }, {
-                    "lab": "4=极度：被焦虑淹没。基本上不可能放松，生理症状无法忍受。",
-                    "value" : 4
-                }]
-            }];
+            $.ajax({
+                url: '/paper',
+                type: 'get',
+                data: {
+                    "username": getQueryString("username")
+                },
+                success:function(res){
+                    alert('成功');
+                }
+            });
             //追加模板消息
             var str = template('radio-ques', {
-                "record": record
+                "record": testRecord
             });
             //$(".mui-content").html(str);
             document.querySelector('.content-ques').innerHTML = str;
