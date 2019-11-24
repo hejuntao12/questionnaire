@@ -124,7 +124,7 @@ p {
   font-size: 1.6rem;
   font-weight: 600;
   color: #39999a;
-  margin-top: 5px;
+  margin-top: 30px;
   margin-bottom: 20px;
 }
 
@@ -251,11 +251,11 @@ textarea {
 
 .tm-respondent-info {
   margin-top: 40px;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 
 .tm-submit-container {
-  margin-top: 70px;
+  margin-top: 40px;
   margin-bottom: 70px;
 }
 
@@ -324,7 +324,7 @@ textarea {
   }
 }
 
-@media (max-width: 395px) {
+@media (max-width: 300px) {
   .tm-site-name {
     display: block;
     margin-left: 0;
