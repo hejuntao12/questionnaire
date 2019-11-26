@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.experiment.questionnaire.mapper.UserAnswerMapper">
+
+    <resultMap id="UserAnswerMap" type="com.experiment.questionnaire.pojo.UserAnswer">
+        <id column="c_id" jdbcType="VARCHAR" property="CId" />
+        <result column="c_id_option" jdbcType="VARCHAR" property="CIdOption" />
+        <result column="c_id_user" jdbcType="VARCHAR" property="CIdUser" />
+        <result column="n_order_paper" jdbcType="INTEGER" property="NOrderPaper" />
+    </resultMap>
+
+    <select id="getPaperCountByUserName" resultType="Integer">
+        SELECT
+            (
+                CASE
+                WHEN max(n_order_paper) IS NULL THEN
+                    0
+                ELSE
+                    max(n_order_paper)
+                END
+            ) count
+        FROM
+            t_user_answer ua
+        LEFT JOIN t_user us ON ua.c_id_user = us.c_id
+        WHERE
+            us.c_name = #{userName}
+    </select>
+
+    <delete id="deleteByUserIdAndPaperOrder">
+        DELETE
+        FROM
+            t_user_answer
+        WHERE
+            c_id_user = #{userId}
+        AND n_order_paper = #{order}
+    </delete>
+
+    <insert id="insertByBatch" parameterType="list" >
+        insert into t_user_answer (
+            c_id,
+            c_id_option,
+            c_id_user,
+            n_order_paper
+        )VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.CId},
+            #{item.CIdOption},
+            #{item.CIdUser},
+            #{item.NOrderPaper})
+        </foreach>
+    </insert>
+
+    <select id="selectEveryScoreByUserName" resultType="Map">
+        SELECT
+            ua.n_order_paper ord,
+            sum(op.n_score) score
+        FROM
+            t_user_answer ua
+        LEFT JOIN t_user us ON ua.c_id_user = us.c_id
+        LEFT JOIN t_option op ON ua.c_id_option = op.c_id
+        WHERE
+            us.c_name = #{userName}
+        GROUP BY
+            ua.n_order_paper
+        ORDER BY
+            ua.n_order_paper ASC
+    </select>
+</mapper>

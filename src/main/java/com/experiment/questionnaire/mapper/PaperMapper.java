@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PaperMapper {
 
-    Paper selectByCId(String id);
+    Paper selectPaperByNOrder(Integer order);
 }

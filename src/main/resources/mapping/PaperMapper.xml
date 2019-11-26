@@ -2,14 +2,51 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.experiment.questionnaire.mapper.PaperMapper">
 
-    <resultMap id="BaseResultMap" type="com.experiment.questionnaire.pojo.Paper">
-        <result column="c_id" jdbcType="VARCHAR" property="CId" />
+    <resultMap id="PaperMap" type="com.experiment.questionnaire.pojo.Paper">
+        <id column="c_id" jdbcType="VARCHAR" property="CId" />
         <result column="c_name" jdbcType="VARCHAR" property="CName" />
         <result column="n_order" jdbcType="INTEGER" property="NOrder" />
+        <collection resultMap="QuestionMap" property="questionList" />
     </resultMap>
 
-    <select id="selectByCId" resultMap="BaseResultMap">
-        select * from t_paper where c_id = #{id}
+    <resultMap id="QuestionMap" type="com.experiment.questionnaire.pojo.Question">
+        <id column="qu_c_id" jdbcType="VARCHAR" property="CId" />
+        <result column="qu_c_id_paper" jdbcType="VARCHAR" property="CIdPaper" />
+        <result column="qu_c_description" jdbcType="VARCHAR" property="CDescription" />
+        <result column="qu_c_type" jdbcType="VARCHAR" property="CType" />
+        <result column="qu_n_order" jdbcType="INTEGER" property="NOrder" />
+        <collection resultMap="OptionMap" property="optionList" />
+    </resultMap>
+
+    <resultMap id="OptionMap" type="com.experiment.questionnaire.pojo.Option">
+        <id column="op_c_id" jdbcType="VARCHAR" property="CId" />
+        <result column="op_c_id_ques" jdbcType="VARCHAR" property="CIdQues" />
+        <result column="op_c_description" jdbcType="VARCHAR" property="CDescription" />
+        <result column="op_n_score" jdbcType="INTEGER" property="NScore" />
+        <result column="op_n_order" jdbcType="INTEGER" property="NOrder" />
+    </resultMap>
+
+    <select id="selectPaperByNOrder" resultMap="PaperMap">
+        SELECT
+            pa.*,
+            qu.c_id qu_c_id,
+            qu.c_id_paper qu_c_id_paper,
+            qu.c_description qu_c_description,
+            qu.c_type qu_c_type,
+            op.c_id op_c_id,
+            op.c_id_ques op_c_id_ques,
+            op.c_description op_c_description,
+            op.n_score op_n_score,
+            op.n_order op_n_order
+        FROM
+            t_paper pa
+        LEFT JOIN t_question qu ON pa.c_id = qu.c_id_paper
+        LEFT JOIN t_option op ON qu.c_id = op.c_id_ques
+        WHERE
+            pa.n_order = #{order}
+        ORDER BY
+            qu.n_order ASC,
+	        op.n_order ASC
     </select>
 
 </mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.experiment.questionnaire.mapper.UserMapper">
+
+    <resultMap id="UserMap" type="com.experiment.questionnaire.pojo.User">
+        <id column="c_id" jdbcType="VARCHAR" property="CId" />
+        <result column="c_name" jdbcType="VARCHAR" property="CName" />
+    </resultMap>
+
+    <select id="getUserByName" resultMap="UserMap">
+        SELECT
+            *
+        FROM
+            t_user
+        WHERE
+            c_name = #{userName}
+    </select>
+
+    <insert id="insertUser" parameterType="com.experiment.questionnaire.pojo.User">
+        insert into t_user(
+            c_id,
+            c_name
+        )values(
+            #{CId},
+            #{CName})
+    </insert>
+
+</mapper>
