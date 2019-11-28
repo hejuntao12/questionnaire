@@ -39,17 +39,34 @@
             var app = {};
             app.title = '测试结果-折线图';
             option = {
+                title: {
+                    text: '“总体焦虑水平及干扰程度”进展记录图',
+                    x:'center',
+                    y: 'bottom'
+                },
                 xAxis: {
+                    name : '周',
                     type: 'category',
                     data: xData
                 },
                 yAxis: {
+                    name : '总体焦虑水平及\n\n干扰程度量表得分',
+                    nameTextStyle:{
+                        align: 'left',
+                    },
                     type: 'value',
                     max: '20'
                 },
                 series: [{
                     data: scoreData,
-                    type: 'line'
+                    type: 'line',
+                    itemStyle: {
+                        normal: {
+                            label:{
+                                show: true
+                            }
+                        }
+                    }
                 }]
             };
             if (option && typeof option === "object") {
