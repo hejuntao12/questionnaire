@@ -15,11 +15,12 @@ import java.util.Map;
 @Repository
 public interface UserAnswerMapper {
 
-    Integer getPaperCountByUserName(String userName);
+    Integer getTestCountByUserName(String userName);
 
-    int deleteByUserIdAndPaperOrder(@Param("userId") String userId, @Param("order") Integer order);
+    int deleteByUserIdAndTestOrder(@Param("userId") String userId, @Param("order") Integer order);
 
     int insertByBatch(List<UserAnswer> list);
 
-    List<Map<String, Object>> selectEveryScoreByUserName(String userName);
+    List<Map<String, Object>> selectEveryScoreByUserName(@Param("userName") String userName,
+                                                         @Param("paperOrder") Integer paperOrder);
 }

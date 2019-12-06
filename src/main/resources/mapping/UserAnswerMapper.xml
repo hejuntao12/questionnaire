@@ -7,16 +7,18 @@
         <result column="c_id_option" jdbcType="VARCHAR" property="CIdOption" />
         <result column="c_id_user" jdbcType="VARCHAR" property="CIdUser" />
         <result column="n_order_paper" jdbcType="INTEGER" property="NOrderPaper" />
+        <result column="n_order_test" jdbcType="INTEGER" property="NOrderTest" />
+        <result column="d_tjsj" jdbcType="TIMESTAMP" property="DTjsj" />
     </resultMap>
 
-    <select id="getPaperCountByUserName" resultType="Integer">
+    <select id="getTestCountByUserName" resultType="Integer">
         SELECT
             (
                 CASE
-                WHEN max(n_order_paper) IS NULL THEN
+                WHEN max(n_order_test) IS NULL THEN
                     0
                 ELSE
-                    max(n_order_paper)
+                    max(n_order_test)
                 END
             ) count
         FROM
@@ -26,13 +28,13 @@
             us.c_name = #{userName}
     </select>
 
-    <delete id="deleteByUserIdAndPaperOrder">
+    <delete id="deleteByUserIdAndTestOrder">
         DELETE
         FROM
             t_user_answer
         WHERE
             c_id_user = #{userId}
-        AND n_order_paper = #{order}
+        AND n_order_test = #{order}
     </delete>
 
     <insert id="insertByBatch" parameterType="list" >
@@ -40,19 +42,23 @@
             c_id,
             c_id_option,
             c_id_user,
-            n_order_paper
+            n_order_paper,
+            n_order_test,
+            d_tjsj
         )VALUES
         <foreach collection="list" item="item" separator=",">
             (#{item.CId},
             #{item.CIdOption},
             #{item.CIdUser},
-            #{item.NOrderPaper})
+            #{item.NOrderPaper},
+            #{item.NOrderTest},
+            #{item.DTjsj})
         </foreach>
     </insert>
 
     <select id="selectEveryScoreByUserName" resultType="Map">
         SELECT
-            ua.n_order_paper ord,
+            ua.n_order_test ord,
             sum(op.n_score) score
         FROM
             t_user_answer ua
@@ -60,9 +66,10 @@
         LEFT JOIN t_option op ON ua.c_id_option = op.c_id
         WHERE
             us.c_name = #{userName}
+        AND ua.n_order_paper = #{paperOrder}
         GROUP BY
-            ua.n_order_paper
+            ua.n_order_test
         ORDER BY
-            ua.n_order_paper ASC
+            ua.n_order_test ASC
     </select>
 </mapper>

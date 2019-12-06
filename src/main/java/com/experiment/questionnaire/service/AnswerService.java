@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author hjt
@@ -31,35 +29,48 @@ public class AnswerService {
     private UserAnswerMapper userAnswerMapper;
 
     public String getHistoryScore(String userName){
-        List<Map<String, Object>> scoreList = userAnswerMapper.selectEveryScoreByUserName(userName);
-        return JSON.toJSONString(scoreList);
+        Map<String, Object> scoreMap = new HashMap<>();
+        scoreMap.put("anxious", userAnswerMapper.selectEveryScoreByUserName(userName, 1));
+        scoreMap.put("depressed", userAnswerMapper.selectEveryScoreByUserName(userName, 2));
+//        List<Map<String, Object>> scoreList = userAnswerMapper.selectEveryScoreByUserName(userName, 1);
+//        List<Map<String, Object>> scoreList = userAnswerMapper.selectEveryScoreByUserName(userName, 2);
+        return JSON.toJSONString(scoreMap);
     }
 
     public void saveUserAnswer(Map<String, String[]> map){
         try{
             User user = userService.getOrCreateUserByName(map.get("username")[0]);
             String userId = user.getCId();
-            Integer paperOrder = Integer.valueOf(map.get("paperorder")[0]);
-            userAnswerMapper.deleteByUserIdAndPaperOrder(userId, paperOrder);
-            List<UserAnswer> answerList = parseAnswerList(map, userId, paperOrder);
+            Integer testCount = userAnswerMapper.getTestCountByUserName(user.getCName());
+            userAnswerMapper.deleteByUserIdAndTestOrder(userId, testCount + 1);
+            List<UserAnswer> answerList = parseAnswerList(map, userId, testCount + 1);
             userAnswerMapper.insertByBatch(answerList);
         } catch (Exception e) {
             logger.error("解析表单提交失败", e);
         }
     }
 
-    private List<UserAnswer> parseAnswerList(Map<String, String[]> map, String userId, Integer paperOrder){
+    private List<UserAnswer> parseAnswerList(Map<String, String[]> map, String userId, Integer testOrder){
         List<UserAnswer> answerList = new ArrayList<>();
+        Date now = new Date();
         for(Map.Entry<String, String[]> entity: map.entrySet()){
             if(StringUtils.contains(entity.getKey(), "ques")){
                 UserAnswer userAnswer = new UserAnswer();
                 userAnswer.setCId(CommonUtil.getUUID());
                 userAnswer.setCIdUser(userId);
                 userAnswer.setCIdOption(entity.getValue()[0]);
-                userAnswer.setNOrderPaper(paperOrder);
+                userAnswer.setNOrderTest(testOrder);
+                userAnswer.setNOrderPaper(getPaperOrderByQuesName(entity.getKey()));
+                userAnswer.setDTjsj(now);
                 answerList.add(userAnswer);
             }
         }
         return answerList;
+    }
+
+    private Integer getPaperOrderByQuesName(String quesName){
+        String paper = quesName.split("-")[0];
+        String order = paper.replace("paper", "");
+        return Integer.valueOf(order);
     }
 }

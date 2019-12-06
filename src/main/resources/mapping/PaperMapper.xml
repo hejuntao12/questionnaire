@@ -26,27 +26,33 @@
         <result column="op_n_order" jdbcType="INTEGER" property="NOrder" />
     </resultMap>
 
-    <select id="selectPaperByNOrder" resultMap="PaperMap">
+    <select id="selectPaperListByTestOrder" resultMap="PaperMap">
         SELECT
-            pa.*,
+            pa.c_id c_id,
+            pa.c_name c_name,
+            tpr.n_order n_order,
             qu.c_id qu_c_id,
             qu.c_id_paper qu_c_id_paper,
             qu.c_description qu_c_description,
             qu.c_type qu_c_type,
+            qu.n_order qu_n_order,
             op.c_id op_c_id,
             op.c_id_ques op_c_id_ques,
             op.c_description op_c_description,
             op.n_score op_n_score,
             op.n_order op_n_order
         FROM
-            t_paper pa
+            t_test te
+        LEFT JOIN t_test_paper_rel tpr ON te.c_id = tpr.c_id_test
+        LEFT JOIN t_paper pa ON pa.c_id = tpr.c_id_paper
         LEFT JOIN t_question qu ON pa.c_id = qu.c_id_paper
         LEFT JOIN t_option op ON qu.c_id = op.c_id_ques
         WHERE
-            pa.n_order = #{order}
+            te.n_order = #{order}
         ORDER BY
+            tpr.n_order ASC,
             qu.n_order ASC,
-	        op.n_order ASC
+            op.n_order ASC
     </select>
 
 </mapper>

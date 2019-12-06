@@ -7,75 +7,12 @@
     <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
 </head>
 <body style="height: 100%; margin: 0">
-    <div id="container" style="height: 50%;width: 100%;"></div>
+    <div id="container1" style="height: 45%;width: 100%;margin-bottom: 20px"></div>
+    <div id="container2" style="height: 45%;width: 100%;"></div>
     <script type="text/javascript" src="js/echarts.js"></script>
     <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="js/common.js"></script>
+    <script type="text/javascript" src="js/chart.js"></script>
 
-    <script type="text/javascript">
-        $.ajax({
-            url: '/score',
-            type: 'get',
-            data: {
-                "username": getQueryString("username")
-            },
-            success: function (res) {
-                var scoreJson = JSON.parse(res);
-                loadChart(scoreJson);
-            }
-        });
-    </script>
-    <script type="text/javascript">
-        function loadChart(scoreJson){
-            var xData = new Array(scoreJson.length);
-            var scoreData = new Array(scoreJson.length);
-            for(i = 0; i < scoreJson.length; i++){
-                xData[i] = scoreJson[i].ord;
-                scoreData[i] = scoreJson[i].score;
-            }
-
-            var dom = document.getElementById("container");
-            var myChart = echarts.init(dom);
-            var app = {};
-            app.title = '测试结果-折线图';
-            option = {
-                title: {
-                    text: '“总体焦虑水平及干扰程度”进展记录图',
-                    x:'center',
-                    y: 'bottom'
-                },
-                xAxis: {
-                    name : '周',
-                    type: 'category',
-                    data: xData
-                },
-                yAxis: {
-                    name : '总体焦虑水平及\n\n干扰程度量表得分',
-                    nameTextStyle:{
-                        align: 'left',
-                    },
-                    type: 'value',
-                    max: '20'
-                },
-                series: [{
-                    data: scoreData,
-                    type: 'line',
-                    itemStyle: {
-                        normal: {
-                            label:{
-                                show: true
-                            }
-                        }
-                    }
-                }]
-            };
-            if (option && typeof option === "object") {
-                myChart.setOption(option, true);
-            }
-            window.onresize = function () {
-                myChart.resize(); //使第一个图表适应
-            }
-        }
-    </script>
 </body>
 </html>

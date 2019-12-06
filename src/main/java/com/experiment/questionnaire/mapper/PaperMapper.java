@@ -3,6 +3,8 @@ package com.experiment.questionnaire.mapper;
 import com.experiment.questionnaire.pojo.Paper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author hjt
  * @date 2019/11/20 23:11
@@ -10,5 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PaperMapper {
 
-    Paper selectPaperByNOrder(Integer order);
+    List<Paper> selectPaperListByTestOrder(Integer order);
 }

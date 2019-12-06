@@ -8,6 +8,8 @@ import com.experiment.questionnaire.pojo.Paper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author hjt
  * @date 2019/11/20 22:22
@@ -21,17 +23,17 @@ public class PaperService {
     @Autowired
     UserAnswerMapper userAnswerMapper;
 
-    public Paper getPaperByOrder(Integer order){
-        return paperMapper.selectPaperByNOrder(order);
+    public List<Paper> getTestByOrder(Integer order){
+        return paperMapper.selectPaperListByTestOrder(order);
     }
 
     public String getPaperJsonStr(String userName){
-        Integer paperCount = userAnswerMapper.getPaperCountByUserName(userName);
-        Paper paper = getPaperByOrder(paperCount + 1);
-        return paperToJsonStr(paper);
+        Integer testCount = userAnswerMapper.getTestCountByUserName(userName);
+        List<Paper> paperList = getTestByOrder(testCount + 1);
+        return paperToJsonStr(paperList);
     }
 
-    private String paperToJsonStr(Paper paper){
-        return JSON.toJSONString(paper);
+    private String paperToJsonStr(List<Paper> paperList){
+        return JSON.toJSONString(paperList);
     }
 }
